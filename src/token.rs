@@ -43,6 +43,7 @@ pub enum Token {
     Fun,
     Let,
     Struct,
+    Enum,
 }
 
 impl fmt::Display for Token {
@@ -85,6 +86,7 @@ impl fmt::Display for Token {
             Token::Fun => "fun",
             Token::Let => "let",
             Token::Struct => "struct",
+            Token::Enum => "enum",
         };
 
         write!(f, "`{s}`")

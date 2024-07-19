@@ -7,25 +7,6 @@ pub struct Lexer {
     ch: char,        // current char under examination
 }
 
-fn get_identifier(identifier: String) -> Token {
-    match identifier.as_str() {
-        "fun" => Token::Fun,
-        "let" => Token::Let,
-        "struct" => Token::Struct,
-        _ => Token::Name {
-            name: identifier.into(),
-        },
-    }
-}
-
-fn is_letter(ch: char) -> bool {
-    'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_'
-}
-
-fn is_digit(ch: char) -> bool {
-    '0' <= ch && ch <= '9'
-}
-
 impl Lexer {
     pub fn new(input: String) -> Self {
         let mut lexer = Self {
@@ -44,18 +25,7 @@ impl Lexer {
     pub fn next_token(&mut self) -> Option<Token> {
         self.skip_whitespace();
 
-        let token = match self.ch {
-            '=' => Some(Token::Equal),
-            ';' => Some(Token::SemiColon),
-            '(' => Some(Token::LeftParen),
-            ')' => Some(Token::RightParen),
-            ',' => Some(Token::Comma),
-            '+' => Some(Token::Plus),
-            '{' => Some(Token::LeftBrace),
-            '}' => Some(Token::RightBrace),
-            '\0' => Some(Token::EndOfFile),
-            _ => None,
-        };
+        let token = self.match_single_char_token();
 
         if token == None {
             if is_letter(self.ch) {
@@ -73,6 +43,21 @@ impl Lexer {
         } else {
             self.read_char();
             return token;
+        }
+    }
+
+    fn match_single_char_token(&self) -> Option<Token> {
+        match self.ch {
+            '=' => Some(Token::Equal),
+            ';' => Some(Token::SemiColon),
+            '(' => Some(Token::LeftParen),
+            ')' => Some(Token::RightParen),
+            ',' => Some(Token::Comma),
+            '+' => Some(Token::Plus),
+            '{' => Some(Token::LeftBrace),
+            '}' => Some(Token::RightBrace),
+            '\0' => Some(Token::EndOfFile),
+            _ => None,
         }
     }
 
@@ -110,9 +95,90 @@ impl Lexer {
     }
 }
 
+fn get_identifier(identifier: String) -> Token {
+    match identifier.as_str() {
+        "fun" => Token::Fun,
+        "let" => Token::Let,
+        "struct" => Token::Struct,
+        "enum" => Token::Enum,
+        _ => Token::Name {
+            name: identifier.into(),
+        },
+    }
+}
+
+fn is_letter(ch: char) -> bool {
+    'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_'
+}
+
+fn is_digit(ch: char) -> bool {
+    '0' <= ch && ch <= '9'
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn test_get_identifier() {
+        let input = String::from("fun");
+        let expected = Token::Fun;
+        let result = get_identifier(input);
+
+        assert_eq!(expected, result);
+
+        let input = String::from("let");
+        let expected = Token::Let;
+        let result = get_identifier(input);
+
+        assert_eq!(expected, result);
+
+        let input = String::from("struct");
+        let expected = Token::Struct;
+        let result = get_identifier(input);
+
+        assert_eq!(expected, result);
+
+        let input = String::from("enum");
+        let expected = Token::Enum;
+        let result = get_identifier(input);
+
+        assert_eq!(expected, result);
+
+        let input = String::from("my_function_name");
+        let expected = Token::Name {
+            name: "my_function_name".into(),
+        };
+        let result = get_identifier(input);
+
+        assert_eq!(expected, result);
+    }
+
+    #[test]
+    fn test_is_digit() {
+        let input = '8';
+        let result = is_digit(input);
+        assert!(result == true);
+
+        let input = 'r';
+        let result = is_digit(input);
+        assert!(result == false);
+    }
+
+    #[test]
+    fn test_is_letter() {
+        let input = 'r';
+        let result = is_letter(input);
+        assert!(result == true);
+
+        let input = '8';
+        let result = is_letter(input);
+        assert!(result == false);
+
+        let input = '-';
+        let result = is_letter(input);
+        assert!(result == false);
+    }
 
     #[test]
     fn test_next_token() {
