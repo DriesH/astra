@@ -1,0 +1,30 @@
+// This is a comment
+
+/// Doc comment
+
+struct Thing {
+  value: "Test";
+  value1: 1;
+  value2: 2;
+}
+
+enum OtherThing {
+  Foo;
+  Bar;
+}
+
+fun do_thing() {
+  let x = 0;
+  let b = 1;
+  
+  b + x;
+}
+
+
+fun match_example(v: OtherThing) {
+  // Exhaustive match!
+  match v {
+    OtherThing.Foo -> print("foo");
+    OtherThing.Bar -> print("bar");
+  }
+}
