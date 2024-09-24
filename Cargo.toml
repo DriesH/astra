@@ -1,7 +1,6 @@
-[package]
-name = "astra"
-version = "0.1.0"
-edition = "2021"
+[workspace]
 
-[dependencies]
-ecow = "0.2.2"
+members = [
+    "crates/vm",
+    "crates/parser"
+]

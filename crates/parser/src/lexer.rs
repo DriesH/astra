@@ -141,6 +141,11 @@ pub fn str_to_identifier(identifier: &str) -> Option<Token> {
         "let" => Some(Token::Let),
         "struct" => Some(Token::Struct),
         "enum" => Some(Token::Enum),
+        "true" => Some(Token::True),
+        "false" => Some(Token::False),
+        "if" => Some(Token::If),
+        "else" => Some(Token::Else),
+        "return" => Some(Token::Return),
         _ => None,
     }
 }
@@ -241,6 +246,12 @@ mod tests {
 
     b + x;
 }
+
+if (5 < 10) {
+    return true;
+} else {
+    return false;
+}
         "#,
         );
 
@@ -267,13 +278,31 @@ mod tests {
             Token::Plus,
             Token::Name { name: "x".into() },
             Token::SemiColon,
+            Token::RightBrace,
+            Token::If,
+            Token::LeftParen,
+            Token::Int { value: "5".into() },
+            Token::Less,
+            Token::Int { value: "10".into() },
+            Token::RightParen,
+            Token::LeftBrace,
+            Token::Return,
+            Token::True,
+            Token::SemiColon,
+            Token::RightBrace,
+            Token::Else,
+            Token::LeftBrace,
+            Token::Return,
+            Token::False,
+            Token::SemiColon,
+            Token::RightBrace,
+            Token::EndOfFile,
         ];
 
         for expected_token in expected {
             let result: Option<Token> = lexer.next_token();
 
             if let Some(result) = result {
-                dbg!(&result);
                 assert_eq!(result, expected_token);
             }
         }

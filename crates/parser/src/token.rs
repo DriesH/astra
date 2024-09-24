@@ -1,16 +1,14 @@
 use core::fmt;
 
-use ecow::EcoString;
-
 #[derive(Debug, PartialEq)]
 pub enum Token {
     Illegal,
 
-    Name { name: EcoString },
+    Name { name: String },
 
-    Int { value: EcoString },
-    Float { value: EcoString },
-    String { value: EcoString },
+    Int { value: String },
+    Float { value: String },
+    String { value: String },
 
     LeftParen,   // (
     RightParen,  // )
@@ -44,6 +42,11 @@ pub enum Token {
     Let,
     Struct,
     Enum,
+    Return,
+    True,
+    False,
+    If,
+    Else,
 }
 
 impl fmt::Display for Token {
@@ -87,6 +90,11 @@ impl fmt::Display for Token {
             Token::Let => "let",
             Token::Struct => "struct",
             Token::Enum => "enum",
+            Token::Return => "return",
+            Token::True => "true",
+            Token::False => "false",
+            Token::If => "if",
+            Token::Else => "else",
         };
 
         write!(f, "`{s}`")
