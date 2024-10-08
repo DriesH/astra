@@ -31,8 +31,8 @@ pub enum Token {
     SemiColon,
     Comma,
     Bang, // '!'
-    Equal,
-    EqualEqual, // '=='
+    Assign,
+    Equal,      // '=='
     NotEqual,   // '!='
     AmperAmper, // '&&'
     Dot,        // '.'
@@ -79,8 +79,8 @@ impl fmt::Display for Token {
             Token::SemiColon => ";",
             Token::Comma => ",",
             Token::Bang => "!",
-            Token::Equal => "=",
-            Token::EqualEqual => "==",
+            Token::Assign => "=",
+            Token::Equal => "==",
             Token::NotEqual => "!=",
             Token::AmperAmper => "&&",
             Token::Dot => ".",

@@ -55,6 +55,14 @@ impl Lexer {
         self.read_pos += 1;
     }
 
+    fn peak_char(&mut self) -> Option<char> {
+        if self.read_pos >= self.input.len() {
+            None
+        } else {
+            Some(self.input[self.read_pos])
+        }
+    }
+
     fn lex_name(&mut self) -> Token {
         let mut name = String::new();
 
@@ -117,7 +125,19 @@ impl Lexer {
 
     fn consume_single_char(&mut self, c: char) -> Option<Token> {
         let token = match c {
-            '=' => Some(Token::Equal),
+            '=' => {
+                if let Some(ch) = self.peak_char() {
+                    self.read_char();
+
+                    if ch == '=' {
+                        Some(Token::Equal)
+                    } else {
+                        Some(Token::Assign)
+                    }
+                } else {
+                    Some(Token::EndOfFile)
+                }
+            }
             ';' => Some(Token::SemiColon),
             '(' => Some(Token::LeftParen),
             ')' => Some(Token::RightParen),
@@ -125,6 +145,19 @@ impl Lexer {
             '+' => Some(Token::Plus),
             '{' => Some(Token::LeftBrace),
             '}' => Some(Token::RightBrace),
+            '!' => {
+                if let Some(ch) = self.peak_char() {
+                    self.read_char();
+
+                    if ch == '=' {
+                        Some(Token::NotEqual)
+                    } else {
+                        Some(Token::Bang)
+                    }
+                } else {
+                    Some(Token::EndOfFile)
+                }
+            }
             '\0' => Some(Token::EndOfFile),
             _ => None,
         };
@@ -252,6 +285,9 @@ if (5 < 10) {
 } else {
     return false;
 }
+
+==
+!=
         "#,
         );
 
@@ -266,12 +302,12 @@ if (5 < 10) {
             Token::LeftBrace,
             Token::Let,
             Token::Name { name: "x".into() },
-            Token::Equal,
+            Token::Assign,
             Token::Int { value: "0".into() },
             Token::SemiColon,
             Token::Let,
             Token::Name { name: "b".into() },
-            Token::Equal,
+            Token::Assign,
             Token::Int { value: "1".into() },
             Token::SemiColon,
             Token::Name { name: "b".into() },
@@ -296,6 +332,8 @@ if (5 < 10) {
             Token::False,
             Token::SemiColon,
             Token::RightBrace,
+            Token::Equal,
+            Token::NotEqual,
             Token::EndOfFile,
         ];
 
