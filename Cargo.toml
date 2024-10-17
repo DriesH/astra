@@ -1,6 +1,3 @@
 [workspace]
-
-members = [
-    "crates/vm",
-    "crates/parser"
-]
+members = ["crates/*"]
+resolver = "2"
