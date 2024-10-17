@@ -29,7 +29,6 @@ impl Statement for LetStatement {
     fn statement_node(&self) {}
 }
 
-#[derive(Debug)]
 struct Identifier {
     token: Token,
     value: String,
